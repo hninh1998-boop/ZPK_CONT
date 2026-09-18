@@ -12,7 +12,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_cont_chk IMPLEMENTATION.
+CLASS ZCL_CONT_CHK IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
@@ -21,10 +21,13 @@ CLASS zcl_cont_chk IMPLEMENTATION.
 *    WHERE OutboundDelivery = '0080000005'
 *    INTO TABLE @DATA(lt_chk).
 
+    DATA: lv_outbounddelivery TYPE vbeln VALUE '0080001916'.
+
+
     READ ENTITIES OF I_OutboundDeliveryTP FORWARDING PRIVILEGED
       ENTITY OutboundDelivery
       BY \_Text
-      ALL FIELDS WITH VALUE #( ( OutboundDelivery = '0080000905' ) )
+      ALL FIELDS WITH VALUE #( ( OutboundDelivery = lv_outbounddelivery ) )
       RESULT DATA(lt_text)
       FAILED DATA(ls_failed)
       REPORTED DATA(ls_reported).

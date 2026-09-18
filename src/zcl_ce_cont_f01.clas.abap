@@ -35,7 +35,8 @@ CLASS zcl_ce_cont_f01 DEFINITION
         er_ngaygiaohangdukien TYPE zcl_ce_cont_top=>ry_string
         er_soitem             TYPE zcl_ce_cont_top=>ry_string
         er_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
-        er_ngay               TYPE zcl_ce_cont_top=>ry_string.
+        er_ngay               TYPE zcl_ce_cont_top=>ry_string
+        er_plant              TYPE zcl_ce_cont_top=>ry_string.
 
     CLASS-METHODS get_keys
       IMPORTING
@@ -46,6 +47,7 @@ CLASS zcl_ce_cont_f01 DEFINITION
         ir_soitem             TYPE zcl_ce_cont_top=>ry_string
         ir_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
         ir_ngay               TYPE zcl_ce_cont_top=>ry_string
+        ir_plant              TYPE zcl_ce_cont_top=>ry_string
       EXPORTING
         et_keys               TYPE zcl_ce_cont_top=>tt_key.
 
@@ -60,6 +62,8 @@ CLASS zcl_ce_cont_f01 DEFINITION
     CLASS-METHODS get_longtext_result
       IMPORTING
         it_longtext TYPE zcl_ce_cont_top=>tt_longtext
+        it_bases    TYPE zcl_ce_cont_top=>tt_base
+        is_key      TYPE zcl_ce_cont_top=>ty_key
         iv_od       TYPE I_OutboundDelivery-OutboundDelivery
       CHANGING
         cs_result   TYPE zce_cont.
@@ -76,7 +80,9 @@ CLASS zcl_ce_cont_f01 DEFINITION
         it_longtext        TYPE zcl_ce_Cont_top=>tt_longtext
         it_bases           TYPE zcl_ce_Cont_top=>tt_base
         it_kichthuoctui    TYPE zcl_ce_Cont_top=>tt_kichthuoctui
-        it_soluongtheokhsx TYPE zcl_ce_Cont_top=>tt_soluongtheokhsx
+        ir_ngay            TYPE zcl_ce_Cont_top=>ry_string
+        ir_diadiemdonghang TYPE zcl_ce_Cont_top=>ry_string
+        it_quantity        TYPE zcl_ce_Cont_top=>tt_quantity
       EXPORTING
         et_result          TYPE zcl_ce_Cont_top=>tt_result.
 
@@ -98,12 +104,6 @@ CLASS zcl_ce_cont_f01 DEFINITION
       EXPORTING
         et_kichthuoctui TYPE zcl_ce_cont_top=>tt_kichthuoctui.
 
-    CLASS-METHODS get_soluongtheokhsx
-      IMPORTING
-        it_keys            TYPE zcl_ce_cont_top=>tt_key
-      EXPORTING
-        et_soluongtheokhsx TYPE zcl_ce_cont_top=>tt_soluongtheokhsx.
-
     CLASS-METHODS get_base_result
       IMPORTING
         it_bases        TYPE zcl_ce_cont_top=>tt_base
@@ -111,13 +111,6 @@ CLASS zcl_ce_cont_f01 DEFINITION
         it_kichthuoctui TYPE zcl_ce_cont_top=>tt_kichthuoctui
       CHANGING
         cs_result       TYPE zce_cont.
-
-    CLASS-METHODS get_soluongtheokhsx_result
-      IMPORTING
-        it_soluongtheokhsx TYPE zcl_ce_cont_top=>tt_soluongtheokhsx
-        is_key             TYPE zcl_ce_cont_top=>ty_key
-      CHANGING
-        cs_result          TYPE zce_cont.
 
     CLASS-METHODS build_main
       IMPORTING
@@ -128,18 +121,40 @@ CLASS zcl_ce_cont_f01 DEFINITION
         ir_soitem             TYPE zcl_ce_cont_top=>ry_string
         ir_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
         ir_ngay               TYPE zcl_ce_cont_top=>ry_string
+        ir_plant              TYPE zcl_ce_cont_top=>ry_string
       EXPORTING
         et_keys               TYPE zcl_ce_cont_top=>tt_key
         et_bases              TYPE zcl_ce_cont_top=>tt_base
         et_longtext           TYPE zcl_ce_cont_top=>tt_longtext
         et_kichthuoctui       TYPE zcl_ce_cont_top=>tt_kichthuoctui
-        et_soluongtheokhsx    TYPE zcl_ce_cont_top=>tt_soluongtheokhsx.
+        et_quantity           TYPE zcl_ce_cont_top=>tt_quantity.
 
+    CLASS-METHODS add_new_line_result
+      IMPORTING
+        it_bases    TYPE zcl_ce_cont_top=>tt_base
+        it_quantity TYPE zcl_ce_cont_top=>tt_quantity
+      CHANGING
+        ct_results  TYPE zcl_ce_cont_top=>tt_result.
+
+    CLASS-METHODS get_quantity
+      IMPORTING
+        it_keys     TYPE zcl_ce_cont_top=>tt_key
+      EXPORTING
+        et_quantity TYPE zcl_ce_cont_top=>tt_quantity.
+
+    CLASS-METHODS get_quantity_result
+      IMPORTING
+        it_quantity TYPE zcl_ce_cont_top=>tt_quantity
+        is_key      TYPE zcl_ce_cont_top=>ty_key
+      CHANGING
+        cs_result   TYPE zce_cont.
 ENDCLASS.
 
 
 
 CLASS zcl_ce_cont_f01 IMPLEMENTATION.
+
+
   METHOD main.
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     "1. Build Param
@@ -154,6 +169,7 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         er_soitem             = DATA(lr_soitem)
         er_solenhxuathangitem = DATA(lr_solenhxuathangitem)
         er_ngay               = DATA(lr_ngay)
+        er_plant              = DATA(lr_plant)
     ).
 
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -167,12 +183,13 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         ir_soitem             = lr_soitem
         ir_solenhxuathangitem = lr_solenhxuathangitem
         ir_ngay               = lr_ngay
+        ir_plant              = lr_plant
       IMPORTING
         et_keys               = DATA(lt_keys)
         et_bases              = DATA(lt_bases)
         et_longtext           = DATA(lt_longtext)
         et_kichthuoctui       = DATA(lt_kichthuoctui)
-        et_soluongtheokhsx    = DATA(lt_soluongtheokhsx)
+        et_quantity           = DATA(lt_quantity)
     ).
 
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -183,11 +200,15 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         it_longtext        = lt_longtext
         it_bases           = lt_bases
         it_kichthuoctui    = lt_kichthuoctui
-        it_soluongtheokhsx = lt_soluongtheokhsx
+        ir_ngay            = lr_ngay
+        ir_diadiemdonghang = lr_diadiemdonghang
+        it_quantity        = lt_quantity
       IMPORTING
         et_result   = et_result
     ).
   ENDMETHOD.
+
+
 
 
 
@@ -237,6 +258,18 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   METHOD response.
     " ── a. AGGREGATION ──
     TRY.
@@ -264,13 +297,19 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       ENDLOOP.
       SORT ct_result BY (lt_sort_order).
     ELSE.
-      " Default sort
-      SORT ct_result BY SoCont DESCENDING
+      " Default sort: ưu tiên thứ tự user tự sắp xếp (SortOrder); các dòng cùng
+      " SortOrder (vd chưa từng kéo-thả, đều = 0) thì fallback theo thứ tự cũ
+      SORT ct_result BY
+                        SoCont DESCENDING
+                        SoChi DESCENDING
+                        SortOrder ASCENDING
+                        Cont DESCENDING
                         SoLenhXuatHang DESCENDING
                         SoLenhXuatHangItem
                         so
                         soitem.
     ENDIF.
+
 
     " ── d. PAGING ──────────────────────────────────────────
     DATA(lv_skip) = io_request->get_paging( )->get_offset( ).
@@ -330,9 +369,17 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
           er_soitem = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
         WHEN 'NGAY'.
           er_ngay = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
+        WHEN 'PLANT'.
+          er_plant = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
       ENDCASE.
     ENDLOOP.
   ENDMETHOD.
+
+
+
+
+
+
 
 
 
@@ -383,10 +430,8 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         ON aMaterial~SalesOrder              = a~SalesOrder
         AND aMaterial~SalesOrderItem         = a~SalesOrderItem
         AND aMaterial~SalesOrderItemCategory = 'TAN'
-
     LEFT JOIN I_SalesOrderPartner AS b
         ON b~SalesOrder = a~SalesOrder
-
     LEFT JOIN I_OutboundDeliveryItem AS c
         ON c~ReferenceSDDocument      = a~SalesOrder
         AND c~ReferenceSDDocumentItem = a~SalesOrderItem
@@ -399,6 +444,12 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
     LEFT JOIN I_DeliveryDocument AS e
         ON e~DeliveryDocument = d~OutboundDelivery
         AND e~DeliveryDocumentType = 'LF'
+    LEFT JOIN I_SalesOrderScheduleLine AS f
+        ON f~SalesOrder = a~SalesOrder
+        AND f~SalesOrderItem = a~SalesOrderItem
+    LEFT JOIN zi_cont_text AS g
+        ON g~so      = a~SalesOrder
+        AND g~SoItem = a~SalesOrderItem
     FIELDS
         a~SalesOrder           AS so,
         a~SalesOrderItem       AS SOItem,
@@ -409,15 +460,14 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         AND b~Customer               NOT IN ('0000006710','0000006720')
         AND a~SalesOrderItemCategory IN ('TAN', 'CBXN')
 
-        AND a~plant                 IN @ir_diadiemdonghang
+        AND ( a~plant                 IN @ir_diadiemdonghang
+            OR g~DiaDiemDongHangCont IN @ir_diadiemdonghang )
         AND a~SalesOrder            IN @ir_so
         AND c~OutboundDelivery      IN @lr_temp_solenhxuathang
         AND a~RequestedDeliveryDate IN @ir_ngaygiaohangdukien
         AND a~SalesOrderItem        IN @ir_soitem
         AND c~OutboundDeliveryItem  IN @lr_temp_solenhxuathangitem
-        AND CASE WHEN e~OverallGoodsMovementStatus = 'C' THEN e~ActualGoodsMovementDate
-                 WHEN e~OverallGoodsMovementStatus IN ( 'A','B' ) THEN e~PlannedGoodsIssueDate
-                 END IN @ir_ngay
+        AND a~plant                 IN @ir_plant
     GROUP BY
         a~SalesOrder,
         a~SalesOrderItem,
@@ -430,6 +480,13 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         c~OutboundDeliveryItem DESCENDING
     INTO TABLE @et_keys.
   ENDMETHOD.
+
+
+
+
+
+
+
 
 
 
@@ -481,36 +538,93 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
 
 
 
+
+
+
+
+
+
+
+
+
   METHOD get_longtext_result.
     "Giờ gọi cont về nhà máy - Z007
     cs_result-GioGoiContVeNM = get_longtext_result_data( it_longtext   = it_longtext
                                                  iv_longtextid = 'Z007'
                                                  iv_od         = iv_od ).
-    "Số Cont - Z006
-    cs_result-SoCont = get_longtext_result_data( it_longtext   = it_longtext
-                                                 iv_longtextid = 'Z006'
-                                                 iv_od         = iv_od ).
+    "Số Cont - Uu tien: Z006 --> Neu khong co Z006 --> Lay Z005 "Update 24.08.2026
+    DATA(lv_so_container) = get_longtext_result_data( it_longtext   = it_longtext
+                                                      iv_longtextid = 'Z006'
+                                                      iv_od         = iv_od ).
+    IF lv_so_container IS NOT INITIAL.
+      cs_result-socont = lv_so_container.
+    ELSE.
+      DATA(lv_bien_so_xe) = get_longtext_result_data( it_longtext   = it_longtext
+                                                      iv_longtextid = 'Z005'
+                                                      iv_od         = iv_od ).
+      cs_result-socont = lv_bien_so_xe.
+    ENDIF.
+
     "Số chì - Z029
     cs_result-SoChi = get_longtext_result_data( it_longtext   = it_longtext
                                                  iv_longtextid = 'Z029'
                                                  iv_od         = iv_od ).
-    "Ngày tàu chạy - Z048
-    cs_result-NgayTauChay = get_longtext_result_data( it_longtext   = it_longtext
-                                                      iv_longtextid = 'Z048'
-                                                      iv_od         = iv_od ).
+    "Dev/NinhNH/cont/udt logic  - v1.7
+    "Ưu tiên lấy ở ztable --> sau mới đến longtext
     "Ghi chú giao hàng - Z009
-    cs_result-GhiChuGiaoHang = get_longtext_result_data( it_longtext   = it_longtext
-                                                         iv_longtextid = 'Z009'
-                                                         iv_od         = iv_od ).
+    "Ngày tàu chạy - Z010
     "Thời gian cắt máng - Z008
-    cs_result-ThoiGianCatMang = get_longtext_result_data( it_longtext   = it_longtext
-                                                          iv_longtextid = 'Z008'
+    READ TABLE it_bases INTO DATA(ls_ztab) WITH KEY so                 = is_key-so
+                                                     soitem             = is_key-soitem
+                                                     solenhxuathang     = is_key-solenhxuathang
+                                                     solenhxuathangitem = is_key-solenhxuathangitem.
+    IF sy-subrc = 0.
+      IF ls_ztab-ghichugiaohang IS NOT INITIAL.
+        cs_result-GhiChuGiaoHang = ls_ztab-ghichugiaohang.
+      ELSE.
+        cs_result-GhiChuGiaoHang = get_longtext_result_data( it_longtext   = it_longtext
+                                                             iv_longtextid = 'Z009'
+                                                             iv_od         = iv_od ).
+      ENDIF.
+      IF ls_ztab-NgayTauChay IS NOT INITIAL.
+        cs_result-NgayTauChay = ls_ztab-NgayTauChay.
+      ELSE.
+        cs_result-NgayTauChay = get_longtext_result_data( it_longtext   = it_longtext
+                                                          iv_longtextid = 'Z010'
                                                           iv_od         = iv_od ).
+      ENDIF.
+      IF ls_ztab-ThoiGianCatMang IS NOT INITIAL.
+        cs_result-ThoiGianCatMang = ls_ztab-ThoiGianCatMang.
+      ELSE.
+        cs_result-ThoiGianCatMang = get_longtext_result_data( it_longtext   = it_longtext
+                                                              iv_longtextid = 'Z008'
+                                                              iv_od         = iv_od ).
+      ENDIF.
+    ENDIF.
+
     "Tare Weight - Z045
     cs_result-TareWeight = get_longtext_result_data( it_longtext   = it_longtext
                                                      iv_longtextid = 'Z045'
                                                      iv_od         = iv_od ).
+
+    "Cont - Z034
+    cs_result-cont = get_longtext_result_data( it_longtext   = it_longtext
+                                               iv_longtextid = 'Z034'
+                                               iv_od         = iv_od ).
+
+    "Booking - Z047 "Update 24.08.2026
+    cs_result-Booking = get_longtext_result_data( it_longtext   = it_longtext
+                                                  iv_longtextid = 'Z047'
+                                                  iv_od         = iv_od ).
   ENDMETHOD.
+
+
+
+
+
+
+
+
 
 
 
@@ -557,7 +671,63 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   METHOD build_result.
+    "Get Material
+    SELECT FROM I_SalesOrderItem AS a
+    FIELDS
+        a~SalesOrder,
+        a~SalesOrderItem,
+
+        a~Product
+    FOR ALL ENTRIES IN @it_keys
+    WHERE
+        a~SalesOrder = @it_keys-so
+        AND a~SalesOrderItem = @it_keys-soitem
+        AND a~SalesOrderItemCategory IN ( 'TAN', 'CBXN' )
+    INTO TABLE @DATA(lt_material).
+    IF lt_material IS NOT INITIAL.
+      DATA: lr_mara TYPE RANGE OF I_ClfnObjectCharcValue-CharcValue.
+
+      LOOP AT lt_material INTO DATA(ls_material).
+        APPEND INITIAL LINE TO lr_mara ASSIGNING FIELD-SYMBOL(<lfs_mara>).
+        <lfs_mara>-sign   = 'I'.
+        <lfs_mara>-option = 'EQ'.
+        <lfs_mara>-low    = ls_material-Product.
+      ENDLOOP.
+
+      SELECT FROM I_ClfnObjectCharcValue AS a
+      INNER JOIN I_ClfnCharacteristic AS b
+          ON b~CharcInternalID     = a~CharcInternalID
+          AND b~TimeIntervalNumber = a~TimeIntervalNumber
+      FIELDS
+          a~ClfnObjectID,
+          b~Characteristic,
+
+          a~CharcValue
+      WHERE
+          b~Characteristic      IN ( 'Z_LOAIMANG', 'Z_LOAIMANH' )
+          AND a~ClassType       = '001'
+          AND a~ClfnObjectID IN @lr_mara
+          AND a~ClfnObjectTable = 'MARA'
+      INTO TABLE @DATA(lt_mara).
+    ENDIF.
+
+    "Main Processing result data
     LOOP AT it_keys  INTO DATA(ls_key).
       DATA(lv_tabix) = sy-tabix.
 
@@ -568,6 +738,8 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
 
       "Long text fields
       get_longtext_result( EXPORTING it_longtext = it_longtext
+                                     it_bases    = it_bases
+                                     is_key      = ls_key
                                      iv_od       = ls_key-solenhxuathang
                            CHANGING  cs_result   = <lfs_result> ).
 
@@ -577,29 +749,37 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
                                  it_kichthuoctui = it_kichthuoctui
                        CHANGING  cs_result       = <lfs_result> ).
 
-*      "Số lượng theo KHSX
-*      get_soluongtheokhsx_result( EXPORTING it_soluongtheokhsx = it_soluongtheokhsx
-*                                            is_key             = ls_key
-*                                  CHANGING  cs_result          = <lfs_result> ).
+      "Số lượng chưa lên lệnh sản xuất
+      get_quantity_result( EXPORTING it_quantity = it_quantity
+                                     is_key      = ls_key
+                            CHANGING cs_result   = <lfs_result> ).
+
+      "Loại màng + Loại manh
+      READ TABLE lt_material INTO ls_material WITH KEY SalesOrder     = ls_key-so
+                                                       SalesOrderItem = ls_key-soitem
+                                                       Product        = <lfs_result>-MaHang.
+      IF sy-subrc = 0.
+        LOOP AT lt_mara INTO DATA(ls_mara) WHERE ClfnObjectID = ls_material-Product.
+          IF ls_mara-Characteristic = 'Z_LOAIMANG'.
+            <lfs_result>-LoaiMang = ls_mara-CharcValue.
+          ELSEIF ls_mara-Characteristic = 'Z_LOAIMANH'.
+            <lfs_result>-LoaiManh = ls_mara-CharcValue.
+          ENDIF.
+        ENDLOOP.
+      ENDIF.
     ENDLOOP.
+
+    "Add thêm line phụ thuộc logic của quantity
+    add_new_line_result( EXPORTING it_bases    = it_bases
+                                   it_quantity = it_quantity
+                          CHANGING ct_results  = et_result ).
+
+    IF ir_ngay IS NOT INITIAL.
+      DELETE et_result WHERE Ngay NOT IN ir_ngay.
+    ENDIF.
+
+    DELETE et_result WHERE DiaDiemDongHang NOT IN ir_diadiemdonghang.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD get_bases.
@@ -629,6 +809,9 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
     LEFT JOIN I_OutboundDelivery AS i
         ON i~OutboundDelivery = a~solenhxuathang
         AND i~OverallGoodsMovementStatus IS NOT INITIAL
+    LEFT JOIN I_SalesOrderPartner AS j
+        ON j~SalesOrder = a~so
+        AND j~PartnerFunction = 'ZE'
     FIELDS
         "Key
         a~so,
@@ -640,56 +823,45 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         b~RequestedDeliveryDate AS NgayGiaoHangDuKien,
         b~Product AS MaHang,
         b~SalesOrderItemText AS TenHang,
-        b~Plant,
-        c~PlantName,
+        CASE WHEN e~DiaDiemDongHangCont IS NOT INITIAL
+             THEN e~DiaDiemDongHangCont
+             ELSE b~Plant END AS DiaDiemDongHangCont,
+        CASE WHEN e~DiaDiemDongHangContName IS NOT INITIAL
+             THEN e~DiaDiemDongHangContName
+             ELSE c~PlantName END AS DiaDiemDongHangContName,
         d~ActualDeliveryQuantity AS SoLuongTrenLenhXuatHang,
         d~DeliveryQuantityUnit,
 
         "Z Table
         e~DongDauThung,
-        e~NguoiPhuTrach,
+        j~FullName AS NguoiPhuTrach, "Update 24.08.2026
         e~Cont,
         e~KeHoachDongCont,
+        e~GhiChuKhac,
+        e~GhiChuGiaoHang,
+        e~NgayTauChay,
+        e~ThoiGianCatMang,
+        e~SortOrder,
 
         "Excel
         f~CompanyCodeName,
-        CASE WHEN g~OverallGoodsMovementStatus = 'C'
-                THEN g~ActualGoodsMovementDate
-             WHEN g~OverallGoodsMovementStatus IN ( 'A','B' )
-                THEN g~PlannedGoodsIssueDate
+        CASE WHEN g~OverallGoodsMovementStatus = 'C' THEN g~ActualGoodsMovementDate
+             WHEN e~NgayDongCont IS NOT INITIAL      THEN e~NgayDongCont
+             WHEN g~OverallGoodsMovementStatus = 'A' THEN g~PlannedGoodsIssueDate
         END AS Ngay,
 
         "Số lượng chưa lên lệnh xuất hàng
-        h~OpenConfdDelivQtyInBaseUnit AS SoLuongChuaLenLenhXuatHang,
+        CASE WHEN h~IsConfirmedDelivSchedLine = 'X' THEN h~OpenConfdDelivQtyInBaseUnit ELSE 0
+        END AS SoLuongChuaLenLenhXuatHang,
+        h~DeliveredQuantityInBaseUnit, "Check case sinh thêm line "Update 25.08.2026
+        h~IsConfirmedDelivSchedLine, "Check case sinh thêm line "Update 27.08.2026
 
         "Trạng thái OD
-        i~\_OverallGoodsMovementStatus\_Text[ Language = @sy-langu ]-OverallGoodsMovementStatusDesc AS TrangThaiOD
+        i~\_OverallGoodsMovementStatus\_Text[ Language = @sy-langu ]-OverallGoodsMovementStatusDesc AS TrangThaiOD,
+        b~Plant,
+        c~PlantName
     INTO TABLE @et_bases.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD get_result_key.
@@ -705,30 +877,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
     cs_result-SoKH = |{ lv_so }/{ lv_soitem }|.
     CONDENSE: cs_result-SoKH NO-GAPS.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD get_kichthuoctui.
@@ -797,87 +945,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
 
 
 
-  METHOD get_soluongtheokhsx.
-    "Số lượng theo KHSX
-    "Từ số SO/Item ở (1) và (2) vào CDS view I_SALESORDERSCHEDULELINE:
-    "   lọc theo
-    "       Sales Order,
-    "       Sales Order Item,
-    "       IsRequestedDelivSchedLine = "X",
-    "       DELIVBLOCKREASONFORSCHEDLINE = null,
-    "   lấy tổng OPENCONFDDELIVQTYINBASEUNIT của các line thỏa mãn điều kiện
-    SELECT FROM @it_keys AS a
-    INNER JOIN i_salesorderscheduleline AS b
-        ON b~SalesOrder      = a~so
-        AND b~SalesOrderItem = a~soitem
-        AND b~IsRequestedDelivSchedLine = 'X'
-        AND b~DelivBlockReasonForSchedLine IS INITIAL
-    FIELDS
-        "key fields
-        a~so,
-        a~soitem,
-        a~solenhxuathang,
-        a~solenhxuathangitem,
-        b~BaseUnit,
-
-        SUM( b~ScheduleLineOrderQuantity ) AS soluongtheokhsx
-    GROUP BY
-        a~so,
-        a~soitem,
-        a~solenhxuathang,
-        a~solenhxuathangitem,
-        b~BaseUnit
-    ORDER BY
-        a~so,
-        a~soitem,
-        a~solenhxuathang DESCENDING,
-        a~solenhxuathangitem DESCENDING
-    INTO TABLE @et_soluongtheokhsx.
-
-    CHECK sy-subrc = 0.
-    "Format số lượng --> chỉ lấy line cuối của số lượng nếu trùng SO và SOItem
-    LOOP AT et_soluongtheokhsx ASSIGNING FIELD-SYMBOL(<lfs_line>)
-         GROUP BY ( so     = <lfs_line>-so
-                    soitem = <lfs_line>-soitem
-                    size   = GROUP SIZE )
-         ASSIGNING FIELD-SYMBOL(<lfs_grp>).
-
-      DATA(lv_lines) = <lfs_grp>-size.
-      DATA(lv_idx)   = 0.
-
-      LOOP AT GROUP <lfs_grp> ASSIGNING FIELD-SYMBOL(<lfs_member>).
-        lv_idx += 1.
-
-        IF lv_idx < lv_lines.
-          CLEAR <lfs_member>-soluongtheokhsx.
-        ENDIF.
-      ENDLOOP.
-
-    ENDLOOP.
-  ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -897,15 +964,19 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       cs_result-MaHang                  = ls_base-mahang.
       cs_result-TenHang                 = ls_base-tenhang.
       cs_result-DiaDiemDongHang         = ls_base-diadiemdonghang.
-      cs_result-PlantName               = ls_base-plantname.
+      cs_result-DiaDiemDongHangContName = ls_base-DiaDiemDongHangContName.
       cs_result-SoLuongTrenLenhXuatHang = ls_base-soluongtrenlenhxuathang.
       cs_result-DeliveryQuantityUnit    = ls_base-deliveryquantityunit.
 
       "Z table
       cs_result-DongDauThung      = ls_base-dongdauthung.
       cs_result-NguoiPhuTrachCont = ls_base-nguoiphutrach.
-      cs_result-Cont              = ls_base-cont.
+      IF cs_result-Cont IS INITIAL.
+        cs_result-Cont              = ls_base-cont.
+      ENDIF.
       cs_result-KeHoachDongCont   = ls_base-kehoachdongcont.
+      cs_result-GhiChuKhac        = ls_base-GhiChuKhac.
+      cs_result-SortOrder        = ls_base-SortOrder.
 
       "Kích thước túi
       READ TABLE it_kichthuoctui INTO DATA(ls_kichthuoctui) WITH KEY so                 = ls_base-so
@@ -921,56 +992,15 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       cs_result-CompanyCodeName            = ls_base-companycodename.
       cs_result-Ngay                       = ls_base-ngay.
 
-      "Số lượng chưa lên lệnh xuất hàng
-      cs_result-SoLuongChuaLenLenhXuatHang = ls_base-soluongchualenlenhxuathang.
-
       "Trạng thái OD
       cs_result-TrangThaiOD = ls_base-trangthaiod.
+
+      "Plant + Plant Name
+      cs_result-Plant     = ls_base-plant.
+      cs_result-PlantName = ls_base-plantname.
+
     ENDIF.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  METHOD get_soluongtheokhsx_result.
-    READ TABLE it_soluongtheokhsx INTO DATA(ls_soluongtheokhsx) WITH KEY so                 = is_key-so
-                                                                         soitem             = is_key-soitem
-                                                                         solenhxuathang     = is_key-solenhxuathang
-                                                                         solenhxuathangitem = is_key-solenhxuathangitem.
-    IF sy-subrc = 0.
-      cs_result-SoLuongTheoKHSX = ls_soluongtheokhsx-soluongtheokhsx.
-      cs_result-BaseUnit        = ls_soluongtheokhsx-baseunit.
-    ENDIF.
-  ENDMETHOD.
-
 
 
 
@@ -1008,6 +1038,7 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         ir_soitem             = ir_soitem
         ir_solenhxuathangitem = ir_solenhxuathangitem
         ir_ngay               = ir_ngay
+        ir_plant              = ir_plant
       IMPORTING
         et_keys               = et_keys
     ).
@@ -1032,13 +1063,185 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       IMPORTING
         et_kichthuoctui = et_kichthuoctui
     ).
-*    "5. Get Số lượng theo kế hoạch sản xuất
-*    get_soluongtheokhsx(
-*      EXPORTING
-*        it_keys            = et_keys
-*      IMPORTING
-*        et_soluongtheokhsx = et_soluongtheokhsx
-*    ).
+
+    "5. Get quantity
+    get_quantity(
+      EXPORTING
+        it_keys     = et_keys
+      IMPORTING
+        et_quantity = et_quantity
+    ).
+  ENDMETHOD.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  METHOD add_new_line_result.
+    DATA lt_new_line TYPE zcl_ce_cont_top=>tt_result.
+
+    LOOP AT ct_results ASSIGNING FIELD-SYMBOL(<lfs_result>)
+         GROUP BY ( so     = <lfs_result>-so
+                    soitem = <lfs_result>-soitem )
+         ASCENDING
+         ASSIGNING FIELD-SYMBOL(<lfs_group>).
+
+      LOOP AT GROUP <lfs_group> ASSIGNING FIELD-SYMBOL(<lfs_first>).
+        EXIT. "chỉ cần dòng đầu tiên của nhóm để lấy thông tin đại diện
+      ENDLOOP.
+
+      READ TABLE it_quantity INTO DATA(ls_quantity) WITH KEY so                 = <lfs_first>-so
+                                                             soitem             = <lfs_first>-SOItem
+                                                             solenhxuathang     = <lfs_first>-solenhxuathang
+                                                             SoLenhXuatHangItem = <lfs_first>-SoLenhXuatHangItem.
+      IF sy-subrc = 0.
+        IF ls_quantity-soluongchualenlenhsanxuat <> 0.
+          IF ls_quantity-deliveredquantityinbaseunit <> 0.
+            APPEND INITIAL LINE TO lt_new_line ASSIGNING FIELD-SYMBOL(<lfs_new>).
+            <lfs_new>-so                         = <lfs_first>-so.
+            <lfs_new>-soitem                     = <lfs_first>-soitem.
+            <lfs_new>-sokh                       = <lfs_first>-sokh.
+            <lfs_new>-tenhang                    = <lfs_first>-tenhang.
+            <lfs_new>-kichthhuoctui              = <lfs_first>-kichthhuoctui.
+            <lfs_new>-nguoiphutrachcont          = <lfs_first>-nguoiphutrachcont.
+            <lfs_new>-soluongchualenlenhxuathang = <lfs_first>-soluongchualenlenhxuathang.
+            <lfs_new>-baseunit                   = <lfs_first>-baseunit.
+            <lfs_new>-DiaDiemDongHang            = <lfs_first>-DiaDiemDongHang.
+            <lfs_new>-DiaDiemDongHangContName    = <lfs_first>-DiaDiemDongHangContName.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+
+      "Add thông tin của button cập nhật thông tin cont
+      SELECT SINGLE FROM zi_cont_text WITH PRIVILEGED ACCESS
+      FIELDS
+        NgayDongCont,
+        DongDauThung,
+        Cont,
+        KeHoachDongCont,
+        GhiChuKhac,
+        GhiChuGiaoHang,
+        NgayTauChay,
+        ThoiGianCatMang,
+        SortOrder
+      WHERE
+        so = @<lfs_first>-so
+        AND soitem =  @<lfs_first>-SOItem
+        AND SoLenh IS INITIAL
+        AND SoLenhItem IS INITIAL
+      INTO @DATA(ls_cont_text).
+      IF sy-subrc = 0 AND <lfs_new> IS ASSIGNED.
+        <lfs_new>-Ngay = ls_cont_text-NgayDongCont.
+        <lfs_new>-DongDauThung = ls_cont_text-DongDauThung.
+        <lfs_new>-Cont = ls_cont_text-Cont.
+        <lfs_new>-KeHoachDongCont = ls_cont_text-KeHoachDongCont.
+        <lfs_new>-GhiChuKhac = ls_cont_text-GhiChuKhac.
+        <lfs_new>-GhiChuGiaoHang = ls_cont_text-GhiChuGiaoHang.
+        <lfs_new>-NgayTauChay = ls_cont_text-NgayTauChay.
+        <lfs_new>-ThoiGianCatMang = ls_cont_text-ThoiGianCatMang.
+        <lfs_new>-SortOrder = ls_cont_text-SortOrder.
+      ENDIF.
+
+      UNASSIGN: <lfs_new>.
+    ENDLOOP.
+
+    IF lt_new_line IS NOT INITIAL.
+      APPEND LINES OF lt_new_line TO ct_results.
+    ENDIF.
+  ENDMETHOD.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  METHOD get_quantity.
+    SELECT FROM @it_keys AS a
+    LEFT JOIN I_SalesOrderScheduleLine AS b
+        ON b~SalesOrder = a~so
+        AND b~SalesOrderItem = a~soitem
+    FIELDS
+        "key fields
+        a~so,
+        a~soitem,
+        a~solenhxuathang,
+        a~solenhxuathangitem,
+
+        SUM( CASE WHEN b~IsConfirmedDelivSchedLine = 'X'
+                  THEN b~OpenConfdDelivQtyInBaseUnit
+                  ELSE 0
+        END ) AS soluongchualenlenhsanxuat,
+        SUM( b~DeliveredQuantityInBaseUnit ) AS DeliveredQuantityInBaseUnit
+    GROUP BY
+        a~so,
+        a~soitem,
+        a~solenhxuathang,
+        a~solenhxuathangitem
+    INTO TABLE @et_quantity.
+  ENDMETHOD.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  METHOD get_quantity_result.
+    READ TABLE it_quantity INTO DATA(ls_quantity) WITH KEY so                 = is_key-so
+                                                           soitem             = is_key-soitem
+                                                           solenhxuathang     = is_key-solenhxuathang
+                                                           solenhxuathangitem = is_key-solenhxuathangitem.
+    IF sy-subrc = 0.
+      cs_result-SoLuongChuaLenLenhXuatHang = ls_quantity-soluongchualenlenhsanxuat.
+    ENDIF.
   ENDMETHOD.
 
 

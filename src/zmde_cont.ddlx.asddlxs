@@ -118,6 +118,18 @@ annotate entity zce_cont with
   @Consumption.filter.hidden: true
   KichThhuocTui;
 
+  @EndUserText.label: 'Loại màng'
+  @UI.lineItem: [{ position: 131 }]
+  @UI.identification: [{ position: 131 }]
+  @Consumption.filter.hidden: true
+  LoaiMang;
+  
+  @EndUserText.label: 'Loại manh'
+  @UI.lineItem: [{ position: 132 }]
+  @UI.identification: [{ position: 132 }]
+  @Consumption.filter.hidden: true
+  LoaiManh;
+
   @EndUserText.label: 'Số lượng theo KHSX'
   //  @UI.lineItem: [{ position: 140 }]
   //  @UI.identification: [{ position: 140 }]
@@ -142,9 +154,9 @@ annotate entity zce_cont with
   @Consumption.filter.hidden: true
   ThoiGianCatMang;
 
-  @EndUserText.label: 'Plant'
-  @UI.lineItem: [{ position: 170, label: 'Địa điểm đóng hàng' }]
-  @UI.identification: [{ position: 170, label: 'Địa điểm đóng hàng' }]
+  @EndUserText.label: 'Địa điểm đóng hàng'
+  @UI.lineItem: [{ position: 170 }]
+  @UI.identification: [{ position: 170 }]
   @UI.selectionField: [{ position: 10 }]
   @Consumption.valueHelpDefinition: [{
     entity: {
@@ -152,12 +164,21 @@ annotate entity zce_cont with
         element: 'Plant'
     }
   }]
+  @Consumption.filter: {
+    mandatory: true,
+    selectionType: #SINGLE
+  }
   DiaDiemDongHang;
 
   @EndUserText.label: 'Plant Name'
   @UI.hidden: true
   @Consumption.filter.hidden: true
   PlantName;
+
+  @EndUserText.label: 'Địa điểm đóng hàng Name'
+  @UI.hidden: true
+  @Consumption.filter.hidden: true
+  DiaDiemDongHangContName;
 
   @EndUserText.label: 'Cont'
   @UI.lineItem: [{ position: 180 }]
@@ -218,11 +239,33 @@ annotate entity zce_cont with
   @Consumption.filter.hidden: true
   TrangThaiOD;
 
+  @EndUserText.label: 'Plant'
+  @UI.lineItem: [{ position: 251 }]
+  @UI.identification: [{ position: 251 }]
+  @UI.selectionField: [{ position: 11 }]
+  @Consumption.valueHelpDefinition: [{
+    entity: {
+        name: 'I_PlantStdVH',
+        element: 'Plant'
+    }
+  }]
+  @Consumption.filter: {
+    mandatory: false,
+    selectionType: #SINGLE
+  }
+  Plant;
+
   @EndUserText.label: 'Kế hoạch đóng cont'
   @UI.lineItem: [{ position: 260 }]
   @UI.identification: [{ position: 260 }]
   @Consumption.filter.hidden: true
   KeHoachDongCont;
+
+  @EndUserText.label: 'Ghi chú khác'
+  @UI.lineItem: [{ position: 270 }]
+  @UI.identification: [{ position: 270 }]
+  @Consumption.filter.hidden: true
+  GhiChuKhac;
 
 
 }

@@ -12,7 +12,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_ce_cont IMPLEMENTATION.
+CLASS ZCL_CE_CONT IMPLEMENTATION.
 
 
   METHOD if_rap_query_provider~select.

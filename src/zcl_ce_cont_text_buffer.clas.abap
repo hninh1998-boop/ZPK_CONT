@@ -25,22 +25,12 @@ ENDCLASS.
 
 
 
-CLASS zcl_ce_cont_text_buffer IMPLEMENTATION.
+CLASS ZCL_CE_CONT_TEXT_BUFFER IMPLEMENTATION.
+
+
   METHOD set_data.
     gt_cont_text = it_data.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD clear_data.
@@ -48,26 +38,7 @@ CLASS zcl_ce_cont_text_buffer IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_data.
     et_data = gt_cont_text.
   ENDMETHOD.
-
 ENDCLASS.
