@@ -8,7 +8,10 @@ CLASS zcl_cont_sortorder DEFINITION
 
 ENDCLASS.
 
-CLASS zcl_cont_sortorder IMPLEMENTATION.
+
+
+CLASS ZCL_CONT_SORTORDER IMPLEMENTATION.
+
 
   METHOD if_oo_adt_classrun~main.
     " Không filter -> lấy toàn bộ data mọi Plant
@@ -71,7 +74,4 @@ CLASS zcl_cont_sortorder IMPLEMENTATION.
       out->write( 'MODIFY thất bại' ).
     ENDIF.
   ENDMETHOD.
-
-
 ENDCLASS.
-

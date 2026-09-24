@@ -152,7 +152,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_ce_cont_f01 IMPLEMENTATION.
+CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
 
 
   METHOD main.
@@ -209,29 +209,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD requested.
     TRY.
         et_filters = io_request->get_filter( )->get_as_ranges( ).
@@ -239,35 +216,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         "handle exception
     ENDTRY.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD response.
@@ -331,27 +279,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD build_param.
     LOOP AT it_filters INTO  DATA(ls_filter).
       CASE ls_filter-name.
@@ -374,31 +301,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       ENDCASE.
     ENDLOOP.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD get_keys.
@@ -482,32 +384,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_longtext_result_data.
     READ TABLE it_longtext INTO DATA(ls_longtext) WITH KEY entity
       COMPONENTS %key-OutboundDelivery = iv_od
@@ -517,34 +393,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       rv_data = ls_longtext-LongText.
     ENDIF.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD get_longtext_result.
@@ -619,30 +467,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_longtext_cont.
     READ ENTITIES OF I_OutboundDeliveryTP FORWARDING PRIVILEGED
     ENTITY OutboundDelivery
@@ -654,36 +478,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
     FAILED DATA(ls_failed)
     REPORTED DATA(lt_reported).
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD build_result.
@@ -920,40 +714,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_base_result.
     READ TABLE it_bases INTO DATA(ls_base) WITH KEY so                 = is_key-so
                                                     soitem             = is_key-soitem
@@ -1003,30 +763,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD build_main.
     "1. Get key
     get_keys(
@@ -1072,24 +808,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
         et_quantity = et_quantity
     ).
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   METHOD add_new_line_result.
@@ -1166,25 +884,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_quantity.
     SELECT FROM @it_keys AS a
     LEFT JOIN I_SalesOrderScheduleLine AS b
@@ -1211,29 +910,6 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   METHOD get_quantity_result.
     READ TABLE it_quantity INTO DATA(ls_quantity) WITH KEY so                 = is_key-so
                                                            soitem             = is_key-soitem
@@ -1243,33 +919,4 @@ CLASS zcl_ce_cont_f01 IMPLEMENTATION.
       cs_result-SoLuongChuaLenLenhXuatHang = ls_quantity-soluongchualenlenhsanxuat.
     ENDIF.
   ENDMETHOD.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ENDCLASS.
