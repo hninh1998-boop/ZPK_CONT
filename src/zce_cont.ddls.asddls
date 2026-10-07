@@ -58,6 +58,7 @@ define root custom entity zce_cont
       ThoiGianCatMang            : abap.string(0); // Z008
       TareWeight                 : abap.string(0); // Z045
       Booking                    : abap.string(0); // Z047
+      NhaCungCapVanTai           : abap.string(0); // Z031
 
       // Others
       @Semantics.quantity.unitOfMeasure: 'BaseUnit'
@@ -65,8 +66,8 @@ define root custom entity zce_cont
 
       // Excel
       CompanyCodeName            : butxt;
-      
+
       // I_ClfnCharacteristic --> I_ClfnObjectCharcValue
-      LoaiMang: atwrt; // Characteristic = Z_LOAIMANG --> CharcValue
-      LoaiManh: atwrt; // Characteristic = Z_LOAIMANH --> CharcValue
+      LoaiMang                   : atwrt; // Characteristic = Z_LOAIMANG --> CharcValue
+      LoaiManh                   : atwrt; // Characteristic = Z_LOAIMANH --> CharcValue
 }

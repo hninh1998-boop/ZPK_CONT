@@ -97,7 +97,13 @@ annotate entity zce_cont with
   @EndUserText.label: 'Số KH'
   @UI.lineItem: [{ position: 100 }]
   @UI.identification: [{ position: 100 }]
-  @Consumption.filter.hidden: true
+  @UI.selectionField: [{ position: 22 }]
+  @Consumption.valueHelpDefinition: [{
+    entity: {
+        name: 'zvh_sokh_cont',
+        element: 'SoKH'
+    }
+  }]
   SoKH;
 
   @EndUserText.label: 'Mã hàng'

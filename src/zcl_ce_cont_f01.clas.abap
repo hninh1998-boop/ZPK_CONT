@@ -36,7 +36,8 @@ CLASS zcl_ce_cont_f01 DEFINITION
         er_soitem             TYPE zcl_ce_cont_top=>ry_string
         er_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
         er_ngay               TYPE zcl_ce_cont_top=>ry_string
-        er_plant              TYPE zcl_ce_cont_top=>ry_string.
+        er_plant              TYPE zcl_ce_cont_top=>ry_string
+        er_sokh               TYPE zcl_ce_cont_top=>ry_string.
 
     CLASS-METHODS get_keys
       IMPORTING
@@ -48,6 +49,7 @@ CLASS zcl_ce_cont_f01 DEFINITION
         ir_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
         ir_ngay               TYPE zcl_ce_cont_top=>ry_string
         ir_plant              TYPE zcl_ce_cont_top=>ry_string
+        ir_sokh               TYPE zcl_ce_cont_top=>ry_string
       EXPORTING
         et_keys               TYPE zcl_ce_cont_top=>tt_key.
 
@@ -122,6 +124,7 @@ CLASS zcl_ce_cont_f01 DEFINITION
         ir_solenhxuathangitem TYPE zcl_ce_cont_top=>ry_string
         ir_ngay               TYPE zcl_ce_cont_top=>ry_string
         ir_plant              TYPE zcl_ce_cont_top=>ry_string
+        ir_sokh               TYPE zcl_ce_cont_top=>ry_string
       EXPORTING
         et_keys               TYPE zcl_ce_cont_top=>tt_key
         et_bases              TYPE zcl_ce_cont_top=>tt_base
@@ -170,6 +173,7 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
         er_solenhxuathangitem = DATA(lr_solenhxuathangitem)
         er_ngay               = DATA(lr_ngay)
         er_plant              = DATA(lr_plant)
+        er_sokh               = DATA(lr_sokh)
     ).
 
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -184,6 +188,7 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
         ir_solenhxuathangitem = lr_solenhxuathangitem
         ir_ngay               = lr_ngay
         ir_plant              = lr_plant
+        ir_sokh               = lr_sokh
       IMPORTING
         et_keys               = DATA(lt_keys)
         et_bases              = DATA(lt_bases)
@@ -298,6 +303,8 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
           er_ngay = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
         WHEN 'PLANT'.
           er_plant = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
+        WHEN 'SOKH'.
+          er_sokh = CORRESPONDING zcl_ce_cont_top=>ry_string( ls_filter-range ).
       ENDCASE.
     ENDLOOP.
   ENDMETHOD.
@@ -352,6 +359,9 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
     LEFT JOIN zi_cont_text AS g
         ON g~so      = a~SalesOrder
         AND g~SoItem = a~SalesOrderItem
+    INNER JOIN zvh_sokh_cont AS k "Số KH = SO/SOItem
+        ON k~SalesOrder      = a~SalesOrder
+        AND k~SalesOrderItem = a~SalesOrderItem
     FIELDS
         a~SalesOrder           AS so,
         a~SalesOrderItem       AS SOItem,
@@ -370,6 +380,7 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
         AND a~SalesOrderItem        IN @ir_soitem
         AND c~OutboundDeliveryItem  IN @lr_temp_solenhxuathangitem
         AND a~plant                 IN @ir_plant
+        AND k~SoKH                  IN @ir_sokh
     GROUP BY
         a~SalesOrder,
         a~SalesOrderItem,
@@ -775,6 +786,7 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
         ir_solenhxuathangitem = ir_solenhxuathangitem
         ir_ngay               = ir_ngay
         ir_plant              = ir_plant
+        ir_sokh               = ir_sokh
       IMPORTING
         et_keys               = et_keys
     ).
@@ -920,3 +932,4 @@ CLASS ZCL_CE_CONT_F01 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.
+
